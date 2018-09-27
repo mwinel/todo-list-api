@@ -4,16 +4,17 @@ python:
 
 install:
  - pip install -r requirements.txt
- - pip install pytest
+#  - pip install pytest
  # Generate the coverage report locally.
- - pip install pytest-cov
+#  - pip install pytest-cov
  # Submit coverage report to coveralls.io.
  - pip install coveralls
 
 script:
  - python tests.py
  # Restrict testing.
- - pytest --cov app/
+#  - pytest --cov app/
+ - coverage run --source="."
 
 after_success:
  - coveralls
