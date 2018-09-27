@@ -14,7 +14,7 @@ script:
  - python tests.py
  # Restrict testing.
 #  - pytest --cov app/
- - coverage run --source=app
+ - coverage run --source=app tests.py
 
 after_success:
  - coveralls
