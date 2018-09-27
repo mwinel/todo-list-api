@@ -1,11 +1,13 @@
+[![Build Status](https://travis-ci.org/mwinel/todo-list-api.svg?branch=develop)](https://travis-ci.org/mwinel/todo-list-api)
+
 # todo-list-api
 This is api provides users with the ability to add todo-items to their todo-lists.
 
-## Stack
+### Stack
 - Python
 - Flask
 
-## Installation and Set Up
+### Installation and Set Up
 
 
 Clone the repo from GitHub:
@@ -15,32 +17,32 @@ https://github.com/mwinel/todo-list-api.git
 cd todo-list-api
 ```
 
-## Create and activate virtualenv
+### Create and activate virtualenv
 
 ```
 python -m venv venv
 venv\Scripts\activate => for windows
 ```
 
-## Requirements
+### Requirements
 
 ```
 pip install -r requirements
 ```
 
-## Set enviroment variables
+### Set enviroment variables
 
 ```
 set FLASK_APP="run.py"
 ```
 
-## Run the Application
+### Run the Application
 
 ```
 flask run
 ```
 
-## Sample Requests
+### Sample Requests
 
 Index
 ```
@@ -68,18 +70,18 @@ Response Body:
 
 ```
 
-## Runnint unit tests
+### Runnint unit tests
 
 ```
 python tests.py 
 ```
 
-## API Endpoints
+### API Endpoints
 
 | Resource URL | Methods | Description | Requires Auth |
 | -------- | ------------- | --------- |--------------- |
 | `/api/index` | `GET`  | The index | `FALSE` |
 
-## Testing Endpoints
+### Testing Endpoints
 
 Test endpoints in Postman or Curl.
