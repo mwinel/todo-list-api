@@ -12,8 +12,8 @@ install:
 
 script:
  - python tests.py
- # Restrict testing to the app directory.
- - pytest --cov app
+ # Restrict testing.
+ - pytest --cov
 
 after_success:
  - coveralls
