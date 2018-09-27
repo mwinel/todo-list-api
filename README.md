@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/mwinel/todo-list-api.svg?branch=develop)](https://travis-ci.org/mwinel/todo-list-api)  [![Coverage Status](https://coveralls.io/repos/github/mwinel/todo-list-api/badge.svg?branch=develop)](https://coveralls.io/github/mwinel/todo-list-api?branch=develop)
+[![Build Status](https://travis-ci.org/mwinel/todo-list-api.svg?branch=develop)](https://travis-ci.org/mwinel/todo-list-api)  [![Coverage Status](https://coveralls.io/repos/github/mwinel/todo-list-api/badge.svg?branch=develop)](https://coveralls.io/github/mwinel/todo-list-api?branch=develop)  [![Maintainability](https://api.codeclimate.com/v1/badges/0270f6ee59a10cc93a82/maintainability)](https://codeclimate.com/github/mwinel/todo-list-api/maintainability)
 
 # todo-list-api
 This is api provides users with the ability to add todo-items to their todo-lists.
