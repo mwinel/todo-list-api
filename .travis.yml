@@ -13,7 +13,7 @@ install:
 script:
  - python tests.py
  # Restrict testing.
-#  - pytest --cov
+ - pytest --cov=todo-list-api/
 
 after_success:
  - coveralls
