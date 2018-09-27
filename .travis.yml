@@ -13,7 +13,7 @@ install:
 script:
  - python tests.py
  # Restrict testing.
- - pytest --cov=app/
+ - pytest --cov app/
 
 after_success:
  - coveralls
