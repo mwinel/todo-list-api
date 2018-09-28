@@ -1,8 +1,6 @@
-# import json
 from flask import jsonify, request
 from app import app
 from app.users import create_new_user, get_all_users, get_user_by_username
-# from app.db import users
 
 
 @app.route("/api/index", methods=['GET'])
