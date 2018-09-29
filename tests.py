@@ -91,6 +91,37 @@ class TestTodoApi(unittest.TestCase):
                             content_type='application/json')
         self.assertTrue(res.status_code, 400)
 
+    def test_user_login(self):
+        """Test API can login a user."""
+        rv = self.app.post("/api/signup", data=json.dumps(self.test_user1),
+                           content_type='application/json')
+        self.assertTrue(rv.status_code, 201)
+        res = self.app.post("/api/login", data=json.dumps(self.test_user1),
+                            content_type='application/json')
+        self.assertTrue(res.status_code, 200)
+        b"Successfully logged in as mimi."
+
+    def test_user_login_invalid_credentials(self):
+        """Test API can not login a user with invalid credentials."""
+        rv = self.app.post("/api/signup", data=json.dumps(self.test_user1),
+                           content_type='application/json')
+        self.assertTrue(rv.status_code, 201)
+        res = self.app.post("/api/login",
+                            data=json.dumps({
+                                "username": "mimi",
+                                "password": "prince"
+                            }),
+                            content_type='application/json')
+        self.assertTrue(res.status_code, 400)
+        b"Invalid credentials" in res.data
+
+    def test_user_login_for_non_registered_user(self):
+        """Test API can not login a non registered user."""
+        rv = self.app.post("/api/signup", data=json.dumps(self.test_user1),
+                           content_type='application/json')
+        self.assertTrue(rv.status_code, 400)
+        b"User does not exist." in rv.data
+
     def tearDown(self):
         pass
 
