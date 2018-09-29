@@ -1,6 +1,33 @@
 from flask import jsonify, request
+from functools import wraps
 from app import app
 from app.users import create_new_user, get_all_users, get_user_by_username
+from app.db import users
+
+
+def check_auth(username, password):
+    # Check if username or password combinations are valid.
+    return username == 'username' and password == 'password'
+
+
+def authenticate(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return jsonify("Unauthorized Access!"), 401
+        return f(*args, **kwargs)
+    return wrapper
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify("The requested URL was not found on the server."), 404
+
+
+@app.errorhandler(405)
+def method_not_allowed(error):
+    return jsonify("The method is not allowed for the requested URL."), 405
 
 
 @app.route("/api/index", methods=['GET'])
@@ -22,6 +49,21 @@ def register_user():
     return create_new_user(username, password), 201
 
 
+@app.route("/api/login", methods=['POST'])
+def login():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    current_user = get_user_by_username(username)
+    if not current_user:
+        return jsonify("User does not exist."), 404
+    for user in users:
+        if username == user.username and password == user.password:
+            return jsonify("Successfully logged in as {}."
+                           .format(username)), 200
+        return jsonify("Invalid credentials"), 400
+
+
 @app.route("/api/users", methods=['GET'])
+@authenticate
 def get_users():
     return get_all_users()
