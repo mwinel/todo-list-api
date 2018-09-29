@@ -1,7 +1,23 @@
 from flask import jsonify, request
+from functools import wraps
 from app import app
 from app.users import create_new_user, get_all_users, get_user_by_username
 from app.db import users
+
+
+def check_auth(username, password):
+    # Check if username or password combinations are valid.
+    return username == 'username' and password == 'password'
+
+
+def authenticate(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return jsonify("Unauthorized Access!"), 401
+        return f(*args, **kwargs)
+    return wrapper
 
 
 @app.errorhandler(404)
@@ -48,5 +64,6 @@ def login():
 
 
 @app.route("/api/users", methods=['GET'])
+@authenticate
 def get_users():
     return get_all_users()
