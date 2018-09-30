@@ -10,7 +10,6 @@ install:
 
 script:
  - python manage.py tests
- - pytest --cov app
 
 after_success:
  - coveralls
