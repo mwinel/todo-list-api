@@ -49,12 +49,6 @@ class TestTodoApi(unittest.TestCase):
         """Test password is an instance variable of the User class."""
         self.assertEqual(self.user1.password, "password")
 
-    def test_index(self):
-        """Test response to index endpoint."""
-        rv = self.app.get("/api/index")
-        self.assertTrue(rv.status_code, 200)
-        b"Welcome to todo-lists" in rv.data
-
     def test_register_user(self):
         """Test API can signup new user."""
         rv = self.app.post("/api/signup", data=json.dumps(self.test_user1),
