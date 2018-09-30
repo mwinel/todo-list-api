@@ -1,7 +1,9 @@
+import re
 from flask import jsonify, request
 from functools import wraps
-from app import app
-from app.users import create_new_user, get_all_users, get_user_by_username
+from app.main.auth import api
+from app.main.auth.user import (create_new_user, get_user_by_username,
+                                get_all_users)
 from app.db import users
 
 
@@ -20,27 +22,14 @@ def authenticate(f):
     return wrapper
 
 
-@app.errorhandler(404)
-def not_found(error):
-    return jsonify("The requested URL was not found on the server."), 404
-
-
-@app.errorhandler(405)
-def method_not_allowed(error):
-    return jsonify("The method is not allowed for the requested URL."), 405
-
-
-@app.route("/api/index", methods=['GET'])
-def index():
-    return jsonify({"message": "Welcome to todo-lists"}), 200
-
-
-@app.route("/api/signup", methods=['POST'])
+@api.route("/signup", methods=['POST'])
 def register_user():
     username = request.json.get('username')
     password = request.json.get('password')
     if username == "" or password == "":
         return jsonify("Fields cannot be left empty."), 400
+    if not re.match("^[a-zA-Z0-9_.-]+$", username):
+        return jsonify("Username should not have spaces."), 400
     if len(password) <= 5:
         return jsonify("Password too short."), 400
     user_exists = get_user_by_username(username)
@@ -49,7 +38,7 @@ def register_user():
     return create_new_user(username, password), 201
 
 
-@app.route("/api/login", methods=['POST'])
+@api.route("/login", methods=['POST'])
 def login():
     username = request.json.get('username')
     password = request.json.get('password')
@@ -63,7 +52,6 @@ def login():
         return jsonify("Invalid credentials"), 400
 
 
-@app.route("/api/users", methods=['GET'])
-@authenticate
+@api.route("/users", methods=['GET'])
 def get_users():
-    return get_all_users()
+    return get_all_users(), 200
