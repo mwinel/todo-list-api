@@ -1,6 +1,6 @@
 import unittest
 import json
-from app import app
+from run import app
 from app.models import User
 
 
