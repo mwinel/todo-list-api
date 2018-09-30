@@ -38,7 +38,7 @@ def register_user():
     return create_new_user(username, password), 201
 
 
-@api.route("/api/login", methods=['POST'])
+@api.route("/login", methods=['POST'])
 def login():
     username = request.json.get('username')
     password = request.json.get('password')
