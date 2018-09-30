@@ -9,7 +9,7 @@ install:
 
 script:
  - python -m unittest -v
- - coverage run --source=app/tests tests.py
+ - coverage run --source=app/tests python -m unittest -v
 
 after_success:
  - coveralls
