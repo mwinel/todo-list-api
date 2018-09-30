@@ -4,11 +4,12 @@ python:
 
 install:
  - pip install -r requirements.txt
+ # Submit coverage report to coveralls.io.
  - pip install coveralls
 
 script:
- - nosetests --with-coverage --cover-pacakge=app
- - coverage report
+ - python manage.py tests
+ - coverage run --source=app python -m unittest
 
 after_success:
  - coveralls
