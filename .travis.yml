@@ -9,7 +9,7 @@ install:
 
 script:
  - python manage.py tests
- - coverage run --source=app python -m unittest
+ - coverage run --source=app manage.py tests
 
 after_success:
  - coveralls
