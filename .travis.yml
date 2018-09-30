@@ -4,12 +4,10 @@ python:
 
 install:
  - pip install -r requirements.txt
- # Submit coverage report to coveralls.io.
  - pip install coveralls
 
 script:
- - python -m unittest -v
- - coverage run --source=app/tests python -m unittest -v
+ - python manage.py tests
 
 after_success:
  - coveralls
