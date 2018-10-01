@@ -1,6 +1,5 @@
 import re
 from flask import jsonify, request
-from functools import wraps
 from app.main.auth import api
 from app.main.auth.user import (create_new_user, get_user_by_username,
                                 get_all_users)
