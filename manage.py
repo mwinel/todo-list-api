@@ -1,14 +1,12 @@
+import os
 import unittest
 from flask_script import Manager
 from app import create_app
+from app.db import Database
 
 
-app = create_app("development")
-
-
-# Create application instance with the required
-# parameter from the enviroment variable.
-# This can either be 'development', 'testing' or 'production.
+db = Database()
+app = create_app(config_name=os.getenv('FLASK_ENV'))
 manager = Manager(app)
 
 
@@ -33,4 +31,5 @@ def tests():
 
 
 if __name__ == "__main__":
+    db.create_tables()
     manager.run()

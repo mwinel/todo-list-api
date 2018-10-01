@@ -3,10 +3,11 @@ from app.config import app_config
 from app.main.errors.request_errors import RequestError
 
 
-# Create app factory. Create the app intance in the app factory
-# Register app configurations.
-# Return the app.
 def create_app(config_name):
+    """
+    Creates the application instance and registers
+    app configurations.
+    """
     app = Flask(__name__)
     app.config.from_object(app_config[config_name])
 
