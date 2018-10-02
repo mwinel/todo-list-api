@@ -36,9 +36,6 @@ class TestAuthCase(TestBase):
 
     def test_register_for_existing_user(self):
         """Test API can not signup exiting user."""
-        rv = self.app.post("/api/signup", data=json.dumps(self.test_user1),
-                           content_type='application/json')
-        self.assertTrue(rv.status_code, 201)
         res = self.app.post("/api/signup", data=json.dumps(self.test_user1),
                             content_type='application/json')
         self.assertTrue(res.status_code, 400)
