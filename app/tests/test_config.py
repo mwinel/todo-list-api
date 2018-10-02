@@ -35,5 +35,5 @@ class TestProductionConfig(unittest.TestCase):
         return app
 
     def test_env_is_testing(self):
-        self.assertTrue(app.config['DEBUG'] is False)
+        self.assertFalse(app.config['DEBUG'] is False)
         self.assertFalse(current_app is None)
