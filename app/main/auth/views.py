@@ -1,9 +1,27 @@
 import re
-from flask import jsonify, request
+from flask import g, jsonify, request
+from flask_httpauth import HTTPBasicAuth
 from app.main.auth import api
 from app.main.auth.user import (create_new_user, get_user_by_username,
                                 get_all_users)
 from app.models import User
+
+
+auth = HTTPBasicAuth()
+
+
+@auth.verify_password
+def verify_password(username, password):
+    user = get_user_by_username(username)
+    if not user:
+        return False
+    g.user = user
+    return True
+
+
+@auth.error_handler
+def auth_error():
+    return jsonify({"error": "Unauthorized Access!"}), 401
 
 
 @api.route("/signup", methods=['POST'])
@@ -38,5 +56,6 @@ def login():
 
 
 @api.route("/users", methods=['GET'])
+@auth.login_required
 def get_users():
     return get_all_users(), 200
