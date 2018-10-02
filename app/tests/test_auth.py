@@ -34,12 +34,6 @@ class TestAuthCase(TestBase):
         self.assertTrue(rv.status_code, 400)
         b"Password too short" in rv.data
 
-    def test_register_for_existing_user(self):
-        """Test API can not signup exiting user."""
-        res = self.app.post("/api/signup", data=json.dumps(self.test_user1),
-                            content_type='application/json')
-        self.assertTrue(res.status_code, 400)
-
     def test_user_login(self):
         """Test API can login a user."""
         rv = self.app.post("/api/signup", data=json.dumps(self.test_user1),
@@ -63,3 +57,10 @@ class TestAuthCase(TestBase):
                             content_type='application/json')
         self.assertTrue(res.status_code, 400)
         b"Invalid credentials" in res.data
+
+    def test_user_login_for_non_registered_user(self):
+        """Test API can not login a non registered user."""
+        rv = self.app.post("/api/signup", data=json.dumps(self.test_user1),
+                           content_type='application/json')
+        self.assertTrue(rv.status_code, 400)
+        b"User does not exist." in rv.data
