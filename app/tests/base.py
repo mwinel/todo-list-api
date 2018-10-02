@@ -1,7 +1,5 @@
 import unittest
 from manage import app
-# from app.models import User
-# from app.db import Database
 
 
 class TestBase(unittest.TestCase):
@@ -30,4 +28,9 @@ class TestBase(unittest.TestCase):
         self.test_user4 = {
             "username": "mimi",
             "password": "123"
+        }
+
+        self.test_user5 = {
+            "username": "sally",
+            "password": "123456"
         }

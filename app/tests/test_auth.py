@@ -34,6 +34,17 @@ class TestAuthCase(TestBase):
         self.assertTrue(rv.status_code, 400)
         b"Password too short" in rv.data
 
+    def test_register_for_existing_user(self):
+        """Test API can not signup existing user."""
+        rv = self.app.post("/api/signup", data=json.dumps(
+                           dict(self.test_user5)),
+                           content_type='application/json')
+        self.assertTrue(rv.status_code, 201)
+        res = self.app.post("/api/signup", data=json.dumps(
+                            dict(self.test_user5)),
+                            content_type='application/json')
+        self.assertTrue(res.status_code, 400)
+
     def test_user_login(self):
         """Test API can login a user."""
         rv = self.app.post("/api/signup", data=json.dumps(self.test_user1),

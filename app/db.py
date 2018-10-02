@@ -49,4 +49,4 @@ class Database:
         query = "DROP TABLE IF EXISTS {0} CASCADE"
         tables = ["users"]
         for table in tables:
-            self.cursor.excute(query.format(table))
+            self.cursor.execute(query.format(table))
