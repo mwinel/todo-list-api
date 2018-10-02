@@ -63,10 +63,3 @@ class TestAuthCase(TestBase):
                             content_type='application/json')
         self.assertTrue(res.status_code, 400)
         b"Invalid credentials" in res.data
-
-    def test_user_login_for_non_registered_user(self):
-        """Test API can not login a non registered user."""
-        rv = self.app.post("/api/signup", data=json.dumps(self.test_user1),
-                           content_type='application/json')
-        self.assertTrue(rv.status_code, 400)
-        b"User does not exist." in rv.data
