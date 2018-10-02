@@ -1,53 +1,11 @@
-import unittest
 import json
-from manage import app
-from app.models import User
+from app.tests.base import TestBase
 
 
-class TestTodoApi(unittest.TestCase):
+class TestAuthCase(TestBase):
     """
-    Tests for the todo-list api.
+    This class tests the user auth endpoints.
     """
-
-    def setUp(self):
-        self.app = app.test_client()
-
-        # Test user objects.
-        self.user1 = User("nelson", "password")
-        self.user2 = User("jackmah", "password")
-
-        # Test users.
-        self.test_user1 = {
-            "username": "mimi",
-            "password": "123456"
-        }
-
-        self.test_user2 = {
-            "username": "",
-            "password": "123456"
-        }
-
-        self.test_user3 = {
-            "username": "mimi",
-            "password": ""
-        }
-
-        self.test_user4 = {
-            "username": "mimi",
-            "password": "123"
-        }
-
-    def test_user_object(self):
-        """Test whether an object is an instance of the User class."""
-        self.assertIsInstance(self.user1, User)
-
-    def test_username(self):
-        """Test username is an instance variable of the User class."""
-        self.assertEqual(self.user1.username, "nelson")
-
-    def test_password(self):
-        """Test password is an instance variable of the User class."""
-        self.assertEqual(self.user1.password, "password")
 
     def test_register_user(self):
         """Test API can signup new user."""
@@ -115,10 +73,3 @@ class TestTodoApi(unittest.TestCase):
                            content_type='application/json')
         self.assertTrue(rv.status_code, 400)
         b"User does not exist." in rv.data
-
-    def tearDown(self):
-        pass
-
-
-if __name__ == "__main__":
-    unittest.main(verbosity=2)
