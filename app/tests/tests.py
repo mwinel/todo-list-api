@@ -40,6 +40,11 @@ class TestTodoApi(unittest.TestCase):
             "password": "123"
         }
 
+        self.test_user5 = {
+            "username": "sally",
+            "password": "123234"
+        }
+
     def test_database_object(self):
         """Test whether an object is an instance of the Database class."""
         self.assertIsInstance(self.db1, Database)
@@ -84,11 +89,11 @@ class TestTodoApi(unittest.TestCase):
         b"Password too short" in rv.data
 
     def test_register_for_existing_user(self):
-        """Test API can not signup exiting user."""
-        rv = self.app.post("/api/signup", data=json.dumps(self.test_user1),
+        """Test API can not signup existing user."""
+        rv = self.app.post("/api/signup", data=json.dumps(self.test_user5),
                            content_type='application/json')
         self.assertTrue(rv.status_code, 201)
-        res = self.app.post("/api/signup", data=json.dumps(self.test_user1),
+        res = self.app.post("/api/signup", data=json.dumps(self.test_user5),
                             content_type='application/json')
         self.assertTrue(res.status_code, 400)
 
