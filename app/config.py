@@ -10,11 +10,13 @@ class Config:
 class DevelopmentConfig(Config):
     """Development configurations."""
     DEBUG = True
+    DATABASE_URL = "postgresql://postgres:myPassword@localhost/todo"
 
 
 class TestingConfig(Config):
     """Testing configurations."""
     TESTING = True
+    DATABASE_URL = "postgresql://postgres:myPassword@localhost/todo_tests"
 
 
 class ProductionConfig(Config):

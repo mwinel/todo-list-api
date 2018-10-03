@@ -1,25 +1,27 @@
 import re
-from flask import jsonify, request
-from functools import wraps
+from flask import g, jsonify, request
+from flask_httpauth import HTTPBasicAuth
 from app.main.auth import api
 from app.main.auth.user import (create_new_user, get_user_by_username,
                                 get_all_users)
-from app.db import users
+from app.models import User
 
 
-def check_auth(username, password):
-    # Check if username or password combinations are valid.
-    return username == 'username' and password == 'password'
+auth = HTTPBasicAuth()
 
 
-def authenticate(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        auth = request.authorization
-        if not auth or not check_auth(auth.username, auth.password):
-            return jsonify("Unauthorized Access!"), 401
-        return f(*args, **kwargs)
-    return wrapper
+@auth.verify_password
+def verify_password(username, password):
+    user = get_user_by_username(username)
+    if not user:
+        return False
+    g.user = user
+    return True
+
+
+@auth.error_handler
+def auth_error():
+    return jsonify({"error": "Unauthorized Access!"}), 401
 
 
 @api.route("/signup", methods=['POST'])
@@ -27,14 +29,14 @@ def register_user():
     username = request.json.get('username')
     password = request.json.get('password')
     if username == "" or password == "":
-        return jsonify("Fields cannot be left empty."), 400
+        return jsonify({"message": "Fields cannot be left empty."}), 400
     if not re.match("^[a-zA-Z0-9_.-]+$", username):
-        return jsonify("Username should not have spaces."), 400
+        return jsonify({"message": "Username should not have spaces."}), 400
     if len(password) <= 5:
-        return jsonify("Password too short."), 400
+        return jsonify({"message": "Password too short."}), 400
     user_exists = get_user_by_username(username)
     if user_exists:
-        return jsonify("User already exists."), 400
+        return jsonify({"message": "User already exists."}), 400
     return create_new_user(username, password), 201
 
 
@@ -42,16 +44,18 @@ def register_user():
 def login():
     username = request.json.get('username')
     password = request.json.get('password')
-    current_user = get_user_by_username(username)
-    if not current_user:
-        return jsonify("User does not exist."), 404
-    for user in users:
-        if username == user.username and password == user.password:
-            return jsonify("Successfully logged in as {}."
-                           .format(username)), 200
-        return jsonify("Invalid credentials"), 400
+    query = get_user_by_username(username)
+    if not query:
+        return jsonify({"message": "User does not exist."}), 400
+    user = User(query[1], query[2])
+    if user.password == password:
+        return jsonify({
+            "message": "Successfully logged in as {}.".format(username)
+        }), 200
+    return jsonify({"message": "Invalid credentials"}), 400
 
 
 @api.route("/users", methods=['GET'])
+@auth.login_required
 def get_users():
     return get_all_users(), 200

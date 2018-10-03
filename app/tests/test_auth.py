@@ -1,53 +1,13 @@
-import unittest
 import json
-from manage import app
-from app.models import User
+from werkzeug.test import Client
+from werkzeug.datastructures import Headers
+from app.tests.base import TestBase
 
 
-class TestTodoApi(unittest.TestCase):
+class TestAuthCase(TestBase):
     """
-    Tests for the todo-list api.
+    This class tests the user auth endpoints.
     """
-
-    def setUp(self):
-        self.app = app.test_client()
-
-        # Test user objects.
-        self.user1 = User("nelson", "password")
-        self.user2 = User("jackmah", "password")
-
-        # Test users.
-        self.test_user1 = {
-            "username": "mimi",
-            "password": "123456"
-        }
-
-        self.test_user2 = {
-            "username": "",
-            "password": "123456"
-        }
-
-        self.test_user3 = {
-            "username": "mimi",
-            "password": ""
-        }
-
-        self.test_user4 = {
-            "username": "mimi",
-            "password": "123"
-        }
-
-    def test_user_object(self):
-        """Test whether an object is an instance of the User class."""
-        self.assertIsInstance(self.user1, User)
-
-    def test_username(self):
-        """Test username is an instance variable of the User class."""
-        self.assertEqual(self.user1.username, "nelson")
-
-    def test_password(self):
-        """Test password is an instance variable of the User class."""
-        self.assertEqual(self.user1.password, "password")
 
     def test_register_user(self):
         """Test API can signup new user."""
@@ -61,6 +21,13 @@ class TestTodoApi(unittest.TestCase):
                            content_type='application/json')
         self.assertTrue(rv.status_code, 400)
         b"Fields cannot be left empty" in rv.data
+
+    def test_register_with_spaced_username_field(self):
+        """Test user can not signup with empty username field."""
+        rv = self.app.post("/api/signup", data=json.dumps(self.test_user6),
+                           content_type='application/json')
+        self.assertTrue(rv.status_code, 400)
+        b"Username should not have spaces" in rv.data
 
     def test_register_with_empty_password_field(self):
         """Test user can not signup with empty password field."""
@@ -77,11 +44,11 @@ class TestTodoApi(unittest.TestCase):
         b"Password too short" in rv.data
 
     def test_register_for_existing_user(self):
-        """Test API can not signup exiting user."""
-        rv = self.app.post("/api/signup", data=json.dumps(self.test_user1),
+        """Test API can not signup existing user."""
+        rv = self.app.post("/api/signup", data=json.dumps(self.test_user5),
                            content_type='application/json')
         self.assertTrue(rv.status_code, 201)
-        res = self.app.post("/api/signup", data=json.dumps(self.test_user1),
+        res = self.app.post("/api/signup", data=json.dumps(self.test_user5),
                             content_type='application/json')
         self.assertTrue(res.status_code, 400)
 
@@ -116,9 +83,29 @@ class TestTodoApi(unittest.TestCase):
         self.assertTrue(rv.status_code, 400)
         b"User does not exist." in rv.data
 
-    def tearDown(self):
-        pass
+    def test_users_page_is_locked(self):
+        rv = self.app.get('/api/users')
+        self.assertTrue(rv.status_code, 401)
+        self.assertTrue('WWW-Authenticate' in rv.headers)
+        self.assertTrue('Basic' in rv.headers['WWW-Authenticate'])
 
+    def test_login_rejects_bad_password(self):
+        """Test user cannot login with invalid password."""
+        h = Headers()
+        h.add('Authorization', 'Basic ' + ('mimi:654321'))
+        rv = Client.open(self.app, path='/api/login', headers=h)
+        self.assertTrue(rv.status_code, 401)
 
-if __name__ == "__main__":
-    unittest.main(verbosity=2)
+    def test_login_rejects_bad_username(self):
+        """Test user cannot login with invalid username."""
+        h = Headers()
+        h.add('Authorization', 'Basic ' + ('mosalah:654321'))
+        rv = Client.open(self.app, path='/api/login', headers=h)
+        self.assertTrue(rv.status_code, 401)
+
+    def test_login_accepts_valid_login(self):
+        """Test login with valid credentials."""
+        h = Headers()
+        h.add('Authorization', 'Basic ' + ('mimi:123456'))
+        rv = Client.open(self.app, path='/api/login', headers=h)
+        self.assertTrue(rv.status_code, 200)

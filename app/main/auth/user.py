@@ -1,6 +1,9 @@
 from flask import jsonify
 from app.models import User
-from app.db import users
+from app.db import Database
+
+
+db = Database()
 
 
 def create_new_user(username, password):
@@ -10,7 +13,7 @@ def create_new_user(username, password):
     returns: a json dictionary of the user.
     """
     user = User(username=username, password=password)
-    users.append(user)
+    db.insert_user_data(username, password)
     return jsonify(User=user.serialize)
 
 
@@ -18,7 +21,8 @@ def get_all_users():
     """
     This method returns a list of users.
     """
-    return jsonify(Users=[i.serialize for i in users])
+    users = db.fetch_all_users()
+    return jsonify(Users=users)
 
 
 def get_user_by_username(username):
@@ -27,6 +31,5 @@ def get_user_by_username(username):
     parameters: username
     returns: user
     """
-    for user in users:
-        if user.username == username:
-            return user
+    user = db.get_by_argument('users', 'username', username)
+    return user

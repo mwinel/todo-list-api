@@ -1,5 +1,7 @@
 # .coveragerc to control coverage.py
 [report]
+omit = 
+    */app/main/auth/user.py/*
 # Regexes for lines to exclude from consideration
 exclude_lines =
     pragma: no cover
