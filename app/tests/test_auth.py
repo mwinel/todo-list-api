@@ -1,4 +1,6 @@
 import json
+from werkzeug.test import Client
+from werkzeug.datastructures import Headers
 from app.tests.base import TestBase
 
 
@@ -73,3 +75,30 @@ class TestAuthCase(TestBase):
                            content_type='application/json')
         self.assertTrue(rv.status_code, 400)
         b"User does not exist." in rv.data
+
+    def test_admin_page_is_locked(self):
+        rv = self.app.get('/api/users')
+        self.assertTrue(rv.status_code, 401)
+        self.assertTrue('WWW-Authenticate' in rv.headers)
+        self.assertTrue('Basic' in rv.headers['WWW-Authenticate'])
+
+    def test_login_rejects_bad_password(self):
+        """Test user cannot login with invalid password."""
+        h = Headers()
+        h.add('Authorization', 'Basic ' + ('mimi:654321'))
+        rv = Client.open(self.app, path='/api/login', headers=h)
+        self.assertTrue(rv.status_code, 401)
+
+    def test_login_rejects_bad_username(self):
+        """Test user cannot login with invalid username."""
+        h = Headers()
+        h.add('Authorization', 'Basic ' + ('mosalah:654321'))
+        rv = Client.open(self.app, path='/api/login', headers=h)
+        self.assertTrue(rv.status_code, 401)
+
+    def test_login_accepts_valid_login(self):
+        """Test login with valid credentials."""
+        h = Headers()
+        h.add('Authorization', 'Basic ' + ('mimi:123456'))
+        rv = Client.open(self.app, path='/api/login', headers=h)
+        self.assertTrue(rv.status_code, 200)
