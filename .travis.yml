@@ -5,9 +5,17 @@ python:
 service:
  - postgresql
 
-before_install:
+env:
+  global:
+    - GIT_COMMITTED_AT=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then git log -1 --pretty=format:%ct; else git log -1 --skip 1 --pretty=format:%ct; fi)
+    - CODECLIMATE_REPO_TOKEN=[47785325441928f5416a0deda4f537b22743195d]
+    - CC_TEST_REPORTER_ID=[399b971d1f325b7419fc37c77a1a722e1501738b09ac7608acadd3974d3c03f0]
+
+before_script:
  - psql -c "CREATE DATABASE todo;" -U postgres
  - psql -c "CREATE USER murungi WITH PASSWORD 'myPassword';" -U postgres
+ - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+ - chmod +x ./cc-test-reporter
 
 install:
  - pip install -r requirements.txt
