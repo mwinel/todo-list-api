@@ -14,7 +14,7 @@ def create_new_user(username, password):
     """
     user = User(username=username, password=password)
     db.insert_user_data(username, password)
-    return jsonify(User=user)
+    return jsonify(User=user.serialize)
 
 
 def get_all_users():
