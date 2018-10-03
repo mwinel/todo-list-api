@@ -1,11 +1,60 @@
+import unittest
 import json
-from app.tests.base import TestBase
+from manage import app
+from app.models import User
+from app.db import Database
 
 
-class TestAuthCase(TestBase):
+class TestTodoApi(unittest.TestCase):
     """
-    This class tests the user auth endpoints.
+    Tests for the todo-list api.
     """
+
+    def setUp(self):
+        self.app = app.test_client()
+
+        self.db1 = Database()
+
+        # Test user objects.
+        self.user1 = User("nelson", "password")
+        self.user2 = User("jackmah", "password")
+
+        # Test users.
+        self.test_user1 = {
+            "username": "mimi",
+            "password": "123456"
+        }
+
+        self.test_user2 = {
+            "username": "",
+            "password": "123456"
+        }
+
+        self.test_user3 = {
+            "username": "mimi",
+            "password": ""
+        }
+
+        self.test_user4 = {
+            "username": "mimi",
+            "password": "123"
+        }
+
+    def test_database_object(self):
+        """Test whether an object is an instance of the Database class."""
+        self.assertIsInstance(self.db1, Database)
+
+    def test_user_object(self):
+        """Test whether an object is an instance of the User class."""
+        self.assertIsInstance(self.user1, User)
+
+    def test_username(self):
+        """Test username is an instance variable of the User class."""
+        self.assertEqual(self.user1.username, "nelson")
+
+    def test_password(self):
+        """Test password is an instance variable of the User class."""
+        self.assertEqual(self.user1.password, "password")
 
     def test_register_user(self):
         """Test API can signup new user."""
@@ -35,13 +84,11 @@ class TestAuthCase(TestBase):
         b"Password too short" in rv.data
 
     def test_register_for_existing_user(self):
-        """Test API can not signup existing user."""
-        rv = self.app.post("/api/signup", data=json.dumps(
-                           dict(self.test_user5)),
+        """Test API can not signup exiting user."""
+        rv = self.app.post("/api/signup", data=json.dumps(self.test_user1),
                            content_type='application/json')
         self.assertTrue(rv.status_code, 201)
-        res = self.app.post("/api/signup", data=json.dumps(
-                            dict(self.test_user5)),
+        res = self.app.post("/api/signup", data=json.dumps(self.test_user1),
                             content_type='application/json')
         self.assertTrue(res.status_code, 400)
 
@@ -75,3 +122,10 @@ class TestAuthCase(TestBase):
                            content_type='application/json')
         self.assertTrue(rv.status_code, 400)
         b"User does not exist." in rv.data
+
+    def tearDown(self):
+        pass
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
