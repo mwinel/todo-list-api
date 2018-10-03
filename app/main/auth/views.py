@@ -46,7 +46,7 @@ def login():
     password = request.json.get('password')
     query = get_user_by_username(username)
     if not query:
-        return jsonify({"message": "User does not exist."}), 404
+        return jsonify({"message": "User does not exist."}), 400
     user = User(query[1], query[2])
     if user.password == password:
         return jsonify({

@@ -22,6 +22,13 @@ class TestAuthCase(TestBase):
         self.assertTrue(rv.status_code, 400)
         b"Fields cannot be left empty" in rv.data
 
+    def test_register_with_spaced_username_field(self):
+        """Test user can not signup with empty username field."""
+        rv = self.app.post("/api/signup", data=json.dumps(self.test_user6),
+                           content_type='application/json')
+        self.assertTrue(rv.status_code, 400)
+        b"Username should not have spaces" in rv.data
+
     def test_register_with_empty_password_field(self):
         """Test user can not signup with empty password field."""
         rv = self.app.post("/api/signup", data=json.dumps(self.test_user3),
@@ -76,7 +83,7 @@ class TestAuthCase(TestBase):
         self.assertTrue(rv.status_code, 400)
         b"User does not exist." in rv.data
 
-    def test_admin_page_is_locked(self):
+    def test_users_page_is_locked(self):
         rv = self.app.get('/api/users')
         self.assertTrue(rv.status_code, 401)
         self.assertTrue('WWW-Authenticate' in rv.headers)

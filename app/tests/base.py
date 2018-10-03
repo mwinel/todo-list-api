@@ -34,3 +34,8 @@ class TestBase(unittest.TestCase):
             "username": "sally",
             "password": "123456"
         }
+
+        self.test_user6 = {
+            "username": "sal ly",
+            "password": "123456"
+        }
