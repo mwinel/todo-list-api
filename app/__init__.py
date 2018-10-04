@@ -20,4 +20,7 @@ def create_app(config_name):
     from app.main.auth import api as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix="/api")
 
+    from app.main.todos import api as todos_blueprint
+    app.register_blueprint(todos_blueprint, url_prefix="/api")
+
     return app

@@ -22,6 +22,10 @@ class Database:
         password VARCHAR(40));"
         self.cursor.execute(create_user_table)
 
+        create_todo_table = "CREATE TABLE IF NOT EXISTS todos\
+        (todo_id SERIAL PRIMARY KEY, title VARCHAR(140));"
+        self.cursor.execute(create_todo_table)
+
     def insert_user_data(self, username, password):
         """Insert user data into the database."""
         user_query = "INSERT INTO users (username, password)\
@@ -43,6 +47,12 @@ class Database:
             row = {'user_id': row[0], 'username': row[1], 'password': row[2]}
             users.append(row)
         return users
+
+    def insert_todo_data(self, title):
+        """Insert todo data into the database."""
+        todo_query = "INSERT INTO todos (title)\
+        VALUES ('{}');".format(title)
+        self.cursor.execute(todo_query)
 
     def drop_tables(self):
         """Drop tables if they exist."""
