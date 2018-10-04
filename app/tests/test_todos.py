@@ -36,3 +36,7 @@ class TestTodosCase(TestBase):
                             content_type='application/json')
         self.assertTrue(res.status_code, 400)
         b"Todo lis exists." in rv.data
+
+    def test_create_todo_is_locked(self):
+        rv = self.app.get("/api/todo")
+        self.assertTrue(rv.status_code, 401)

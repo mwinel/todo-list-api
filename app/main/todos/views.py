@@ -1,9 +1,11 @@
 from flask import jsonify, request
 from app.main.todos import api
 from app.main.todos.todo import create_new_todo, get_todo_by_title
+from app.main.auth.views import auth
 
 
 @api.route("/todo", methods=['POST'])
+@auth.login_required
 def add_todo():
     title = request.json.get('title')
     if title == "":
