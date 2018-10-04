@@ -12,9 +12,29 @@ class User:
     @property
     def serialize(self):
         """
-        Returns data in serializable format.
+        Returns user data in JSON serializable format.
         """
         return {
             "username": self.username,
             "password": self.password
+        }
+
+
+# Define todo-list model
+class Todo:
+    """
+    This class defines the todo list in terms
+    of the title.
+    """
+
+    def __init__(self, title):
+        self.title = title
+
+    @property
+    def serialize(self):
+        """
+        Returns todo data in JSON serializable format.
+        """
+        return {
+            "title": self.title
         }

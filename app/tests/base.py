@@ -39,3 +39,15 @@ class TestBase(unittest.TestCase):
             "username": "sal ly",
             "password": "123456"
         }
+
+        self.todo1 = {
+            "title": "September List"
+        }
+
+        self.todo2 = {
+            "title": " "
+        }
+
+        self.todo3 = {
+            "title": "Sept..."
+        }
