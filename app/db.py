@@ -54,6 +54,15 @@ class Database:
         VALUES ('{}');".format(title)
         self.cursor.execute(todo_query)
 
+    def fetch_all_todos(self):
+        self.cursor.execute("SELECT * FROM todos")
+        rows = self.cursor.fetchall()
+        todos = []
+        for row in rows:
+            row = {'todo_id': row[0], 'title': row[1]}
+            todos.append(row)
+        return todos
+
     def drop_tables(self):
         """Drop tables if they exist."""
         query = "DROP TABLE IF EXISTS {0} CASCADE"
