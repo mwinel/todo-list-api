@@ -38,5 +38,18 @@ class TestTodosCase(TestBase):
         b"Todo lis exists." in rv.data
 
     def test_create_todo_is_locked(self):
+        """Tets create todo resource requires auth."""
         rv = self.app.get("/api/todo")
         self.assertTrue(rv.status_code, 401)
+
+    def test_get_all_todos(self):
+        """Test API can return a list of todos."""
+        rv = self.app.get("api/todo", data=json.dumps(self.todo1),
+                          content_type='application/json')
+        self.assertTrue(rv.status_code, 200)
+
+    def test_get_a_todo(self):
+        """Test API can return a todo list."""
+        rv = self.app.get("api/todo/1", data=json.dumps(self.todo1),
+                          content_type='application/json')
+        self.assertTrue(rv.status_code, 200)
